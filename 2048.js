@@ -186,3 +186,82 @@ function hasEmptyTile() {
     }
     return false;
 }
+
+document.addEventListener('keydown', handleKeyDown);
+document.addEventListener('mousedown', handleMouseDown);
+document.addEventListener('mouseup', handleMouseUp);
+
+// Touch events
+document.addEventListener('touchstart', handleTouchStart);
+document.addEventListener('touchmove', handleTouchMove);
+document.addEventListener('touchend', handleTouchEnd);
+
+// Common event handler
+function handleMove(moveFn) {
+    moveFn();
+    setTwo();
+    document.getElementById("score").innerText = score;
+}
+
+function handleKeyDown(e) {
+    if (e.code === 'ArrowLeft') {
+        handleMove(slideLeft);
+    } else if (e.code === 'ArrowRight') {
+        handleMove(slideRight);
+    } else if (e.code === 'ArrowUp') {
+        handleMove(slideUp);
+    } else if (e.code === 'ArrowDown') {
+        handleMove(slideDown);
+    }
+}
+
+function handleMouseDown(e) {
+    startX = e.clientX;
+    startY = e.clientY;
+}
+
+function handleMouseUp(e) {
+    const endX = e.clientX;
+    const endY = e.clientY;
+    handleGesture(startX, startY, endX, endY);
+}
+
+function handleTouchStart(e) {
+    const touch = e.touches[0];
+    startX = touch.clientX;
+    startY = touch.clientY;
+}
+
+function handleTouchMove(e) {
+    e.preventDefault();
+    const touch = e.touches[0];
+    const endX = touch.clientX;
+    const endY = touch.clientY;
+    handleGesture(startX, startY, endX, endY);
+}
+
+function handleTouchEnd(e) {
+    const touch = e.changedTouches[0];
+    const endX = touch.clientX;
+    const endY = touch.clientY;
+    handleGesture(startX, startY, endX, endY);
+}
+
+function handleGesture(startX, startY, endX, endY) {
+    const deltaX = endX - startX;
+    const deltaY = endY - startY;
+
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        if (deltaX > 0) {
+            handleMove(slideRight);
+        } else {
+            handleMove(slideLeft);
+        }
+    } else {
+        if (deltaY > 0) {
+            handleMove(slideDown);
+        } else {
+            handleMove(slideUp);
+        }
+    }
+}
